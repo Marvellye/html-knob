@@ -1,66 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knob Selector</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
-    <style>
-        .knob-selector {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background-color: #f0f0f0;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knob Selector</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+      .knob-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  position: relative;
 }
 
-.knob-handle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #333;
-    cursor: pointer;
+.knob {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 5px solid #007bff;
+  position: relative;
+  background-color: white;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
-.knob-handle::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: #fff;
+.knob:after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background-color: #007bff;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 }
-    </style>
+
+.knob-value {
+  font-size: 20px;
+  margin-top: 20px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="knob-selector">
-                    <input type="range" id="knob" min="0" max="100" value="50">
-                    <div class="knob-handle"></div>
-                </div>
-            </div>
-        </div>
+  <div class="container text-center">
+    <h1 class="mt-5">Turnable Knob Selector</h1>
+    <div class="knob-container mt-4">
+      <div class="knob" id="knob"></div>
+      <div class="knob-value" id="knobValue">50%</div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const knob = document.getElementById("knob");
-const knobHandle = document.querySelector(".knob-handle");
+  </div>
 
-knob.addEventListener("input", (e) => {
-    const value = e.target.value;
-    const angle = (value / 100) * 360;
-    knobHandle.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+      const knob = document.getElementById('knob');
+const knobValue = document.getElementById('knobValue');
+
+let isDragging = false;
+let angle = 0;
+
+function calculateRotation(e) {
+  const rect = knob.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const rad = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+  return (rad * (180 / Math.PI)) + 90;
+}
+
+function updateKnobRotation(newAngle) {
+  angle = Math.max(Math.min(newAngle, 270), -90); // Limit rotation between -90° to 270°
+  knob.style.transform = `rotate(${angle}deg)`;
+  const value = Math.round(((angle + 90) / 360) * 100); // Convert angle to a value from 0 to 100
+  knobValue.textContent = `${value}%`;
+}
+
+knob.addEventListener('mousedown', (e) => {
+  isDragging = true;
 });
-    </script>
+
+document.addEventListener('mousemove', (e) => {
+  if (isDragging) {
+    const newAngle = calculateRotation(e);
+    updateKnobRotation(newAngle);
+  }
+});
+
+document.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+  </script>
 </body>
 </html>
