@@ -4,29 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knob Selector</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <style>
-        /* Add styles here */
-      .knob-container {
+        .knob-selector {
     position: relative;
     width: 200px;
     height: 200px;
-    border: 1px solid #ccc;
     border-radius: 50%;
     background-color: #f0f0f0;
-}
-
-.knob {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    cursor: grab;
 }
 
 .knob-handle {
@@ -34,63 +20,46 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: #333;
-    z-index: 1;
+    cursor: pointer;
 }
 
-.knob-value {
+.knob-handle::before {
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #fff;
 }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="knob-container">
-            <div class="knob" id="knob">
-                <div class="knob-handle"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="knob-selector">
+                    <input type="range" id="knob" min="0" max="100" value="50">
+                    <div class="knob-handle"></div>
+                </div>
             </div>
-            <div class="knob-value" id="knob-value">50%</div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // JavaScript code here
-      const knob = document.getElementById('knob');
-const knobValue = document.getElementById('knob-value');
+        const knob = document.getElementById("knob");
+const knobHandle = document.querySelector(".knob-handle");
 
-let knobAngle = 0;
-let knobValuePercentage = 50;
-
-knob.addEventListener('mousedown', (e) => {
-    const knobRect = knob.getBoundingClientRect();
-    const knobCenterX = knobRect.left + knobRect.width / 2;
-    const knobCenterY = knobRect.top + knobRect.height / 2;
-    const mouseAngle = Math.atan2(e.clientY - knobCenterY, e.clientX - knobCenterX);
-
-    document.addEventListener('mousemove', (e) => {
-        const newMouseAngle = Math.atan2(e.clientY - knobCenterY, e.clientX - knobCenterX);
-        knobAngle = newMouseAngle - mouseAngle;
-        knobValuePercentage = Math.round((knobAngle / (2 * Math.PI)) * 100);
-        knobValuePercentage = Math.max(0, Math.min(knobValuePercentage, 100));
-
-        knob.style.transform = `rotate(${knobAngle}rad)`;
-        knobValue.innerText = `${knobValuePercentage}%`;
-    });
-});
-
-document.addEventListener('mouseup', () => {
-    document.removeEventListener('mousemove', null);
+knob.addEventListener("input", (e) => {
+    const value = e.target.value;
+    const angle = (value / 100) * 360;
+    knobHandle.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
 });
     </script>
 </body>
