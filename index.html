@@ -39,10 +39,10 @@
 
     .knob:after {
       content: "";
-      width: 20px;
+      width: 2px;
       height: 20px;
       background-color: #007bff;
-      border-radius: 50%;
+      /*border-radius: 50%;*/
       position: absolute;
       top: 10px;
       left: 50%;
@@ -55,14 +55,23 @@
       font-weight: bold;
       color: #007bff;
     }
+    .knob-label {
+      width: auto;
+      height: auto;
+      background-color: black;
+      border-radius: 20%;
+      
+    }
   </style>
 </head>
 <body>
+ 
   <div class="knob-container">
+    <div class="knob-label">
     <div class="knob" id="knob"></div>
+    </div>
     <div class="knob-value" id="knobValue">50%</div>
   </div>
-
   <script>
     const knob = document.getElementById('knob');
     const knobValue = document.getElementById('knobValue');
